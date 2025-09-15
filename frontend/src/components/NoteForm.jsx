@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 
 const NoteForm = ({ onNoteAdded }) => {
+  // Form state
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [location, setLocation] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // Get user's current GPS location
   const getCurrentLocation = () => {
     if (!navigator.geolocation) {
       setError('Geolocation is not supported by this browser.');
@@ -30,9 +32,11 @@ const NoteForm = ({ onNoteAdded }) => {
     );
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    // Validate form inputs
     if (title.length < 3) {
       setError('Title must be at least 3 characters long.');
       return;
@@ -48,8 +52,9 @@ const NoteForm = ({ onNoteAdded }) => {
       return;
     }
 
+    // Send note to backend
     try {
-      const response = await fetch('http://localhost:5000/notes', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/notes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -64,6 +69,7 @@ const NoteForm = ({ onNoteAdded }) => {
       });
 
       if (response.ok) {
+        // Clear form and refresh notes list
         setTitle('');
         setContent('');
         setLocation(null);

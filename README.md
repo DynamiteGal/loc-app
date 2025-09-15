@@ -22,57 +22,32 @@ A simple and clean web application for creating location-based notes with map vi
 
 ## 🚀 Quick Start
 
-### 🐳 Docker Setup (Recommended - No Installation Required)
+### Prerequisites
+- Node.js (v14 or higher)
+- npm or yarn
 
-**Prerequisites:** Docker Desktop
+### Installation
 
-1. **Clone the repository**
+1. **Clone and navigate to the project**
    ```bash
-   git clone <your-repo-url>
    cd loc-app
    ```
 
-2. **Run the app**
-   
-   **Windows:**
-   ```bash
-   setup.bat
-   ```
-   
-   **Mac/Linux:**
-   ```bash
-   chmod +x setup.sh
-   ./setup.sh
-   ```
-   
-   **Or manually:**
-   ```bash
-   docker-compose up --build
-   ```
-
-3. **Access the app**
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:5000
-
-### 📋 Manual Setup (Alternative)
-
-**Prerequisites:** Node.js (v14 or higher), npm
-
-1. **Start Backend**
+2. **Start the Backend**
    ```bash
    cd backend
    npm install
    npm start
    ```
+   Backend will run on `http://localhost:5000`
 
-2. **Start Frontend** (in new terminal)
+3. **Start the Frontend** (in a new terminal)
    ```bash
    cd frontend
    npm install
    npm start
    ```
-
-**📖 For detailed instructions, see [QUICK_START.md](QUICK_START.md)**
+   Frontend will run on `http://localhost:3000`
 
 ## 🏗️ Project Structure
 

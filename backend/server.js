@@ -5,15 +5,15 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(cors());
-app.use(express.json());
+// Middleware setup
+app.use(cors()); // Allow frontend to connect
+app.use(express.json()); // Parse JSON requests
 
-// In-memory storage for notes
+// Simple in-memory storage (resets on server restart)
 let notes = [];
 let nextId = 1;
 
-// JWT Authentication middleware
+// Simple JWT token check (dummy authentication)
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
@@ -25,7 +25,7 @@ const authenticateToken = (req, res, next) => {
   next();
 };
 
-// Validation middleware
+// Validate note data before saving
 const validateNote = (req, res, next) => {
   const { title, content } = req.body;
 
@@ -44,18 +44,17 @@ const validateNote = (req, res, next) => {
   next();
 };
 
-// Routes
+// API Routes
 
-// GET /notes - Get all notes
+// Get all notes (sorted by newest first)
 app.get('/notes', authenticateToken, (req, res) => {
-  // Sort by creation time (newest first)
   const sortedNotes = [...notes].sort((a, b) => 
     new Date(b.createdAt) - new Date(a.createdAt)
   );
   res.json(sortedNotes);
 });
 
-// POST /notes - Create a new note
+// Create a new note
 app.post('/notes', authenticateToken, validateNote, (req, res) => {
   const { title, content, latitude, longitude } = req.body;
 
@@ -72,7 +71,7 @@ app.post('/notes', authenticateToken, validateNote, (req, res) => {
   res.status(201).json(newNote);
 });
 
-// PUT /notes/:id - Update a note
+// Update an existing note
 app.put('/notes/:id', authenticateToken, validateNote, (req, res) => {
   const noteId = parseInt(req.params.id);
   const { title, content } = req.body;
@@ -93,7 +92,7 @@ app.put('/notes/:id', authenticateToken, validateNote, (req, res) => {
   res.json(notes[noteIndex]);
 });
 
-// DELETE /notes/:id - Delete a note
+// Delete a note
 app.delete('/notes/:id', authenticateToken, (req, res) => {
   const noteId = parseInt(req.params.id);
   const noteIndex = notes.findIndex(note => note.id === noteId);

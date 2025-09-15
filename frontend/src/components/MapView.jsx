@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
-// Fix for default markers in Leaflet
+// Fix for default markers in Leaflet (webpack issue)
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
@@ -11,37 +11,41 @@ L.Icon.Default.mergeOptions({
 });
 
 const MapView = ({ notes, selectedNote, onNoteSelect }) => {
+  // Refs for map management
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markersRef = useRef([]);
 
+  // Initialize map on component mount
   useEffect(() => {
     if (!mapRef.current) return;
 
-    // Initialize map
+    // Create map centered on NYC area
     const map = L.map(mapRef.current).setView([40.7128, -74.0060], 10);
     mapInstanceRef.current = map;
 
-    // Add tile layer
+    // Add OpenStreetMap tiles
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors'
     }).addTo(map);
 
+    // Cleanup on unmount
     return () => {
       map.remove();
     };
   }, []);
 
+  // Update markers when notes or selection changes
   useEffect(() => {
     if (!mapInstanceRef.current) return;
 
-    // Clear existing markers
+    // Remove old markers
     markersRef.current.forEach(marker => {
       mapInstanceRef.current.removeLayer(marker);
     });
     markersRef.current = [];
 
-    // Add markers for notes with valid locations
+    // Filter notes with valid GPS coordinates
     const validNotes = notes.filter(note => 
       note.latitude && note.longitude && 
       !isNaN(note.latitude) && !isNaN(note.longitude)
@@ -49,7 +53,7 @@ const MapView = ({ notes, selectedNote, onNoteSelect }) => {
 
     if (validNotes.length === 0) return;
 
-    // Create markers
+    // Create custom markers for each note
     validNotes.forEach(note => {
       const isSelected = selectedNote?.id === note.id;
       
@@ -62,6 +66,7 @@ const MapView = ({ notes, selectedNote, onNoteSelect }) => {
         })
       });
 
+      // Click marker to select note
       marker.on('click', () => {
         onNoteSelect(note);
       });
@@ -70,7 +75,7 @@ const MapView = ({ notes, selectedNote, onNoteSelect }) => {
       markersRef.current.push(marker);
     });
 
-    // Fit map to show all markers
+    // Auto-fit map to show all markers
     if (validNotes.length > 0) {
       const group = new L.featureGroup(markersRef.current);
       mapInstanceRef.current.fitBounds(group.getBounds().pad(0.1));

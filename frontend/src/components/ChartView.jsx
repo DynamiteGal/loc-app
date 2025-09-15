@@ -2,7 +2,7 @@ import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const ChartView = ({ notes }) => {
-  // Count notes by first letter of title
+  // Count how many notes start with each letter
   const getChartData = () => {
     const letterCounts = {};
     
@@ -13,7 +13,7 @@ const ChartView = ({ notes }) => {
       }
     });
 
-    // Convert to array and sort by letter
+    // Convert to array format for chart and sort alphabetically
     return Object.entries(letterCounts)
       .map(([letter, count]) => ({ letter, count }))
       .sort((a, b) => a.letter.localeCompare(b.letter));

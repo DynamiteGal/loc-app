@@ -6,16 +6,17 @@ import ChartView from './components/ChartView';
 import './App.css';
 
 function App() {
+  // State for managing notes and UI
   const [notes, setNotes] = useState([]);
   const [selectedNote, setSelectedNote] = useState(null);
   const [sortBy, setSortBy] = useState('createdAt');
 
-  // Fetch notes from backend
+  // Get all notes from the backend API
   const fetchNotes = async () => {
     try {
-      const response = await fetch('http://localhost:5000/notes', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/notes`, {
         headers: {
-          'Authorization': 'Bearer my-secret-token-123'
+          'Authorization': 'Bearer my-secret-token-123' // JWT token for auth
         }
       });
       if (response.ok) {
@@ -27,19 +28,23 @@ function App() {
     }
   };
 
+  // Load notes when component mounts
   useEffect(() => {
     fetchNotes();
   }, []);
 
+  // Refresh notes list after adding a new note
   const handleNoteAdded = () => {
     fetchNotes();
   };
 
+  // Refresh notes list after deleting a note
   const handleNoteDeleted = () => {
     fetchNotes();
-    setSelectedNote(null);
+    setSelectedNote(null); // Clear selection if deleted note was selected
   };
 
+  // Refresh notes list after updating a note
   const handleNoteUpdated = () => {
     fetchNotes();
   };
@@ -47,18 +52,22 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8">
+        {/* Main app title */}
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">
           📍 Location-Based Notes
         </h1>
         
+        {/* Two column layout for desktop */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left Column - Form and Notes List */}
+          {/* Left side - form and notes list */}
           <div className="space-y-6">
             <NoteForm onNoteAdded={handleNoteAdded} />
             
+            {/* Notes list container */}
             <div className="bg-white rounded-lg shadow-md p-6">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-semibold text-gray-800">Your Notes</h2>
+                {/* Sort dropdown */}
                 <select 
                   value={sortBy} 
                   onChange={(e) => setSortBy(e.target.value)}
@@ -79,7 +88,7 @@ function App() {
             </div>
           </div>
 
-          {/* Right Column - Map and Chart */}
+          {/* Right side - map and chart */}
           <div className="space-y-6">
             <MapView 
               notes={notes}

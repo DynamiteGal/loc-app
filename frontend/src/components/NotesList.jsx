@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 
 const NotesList = ({ notes, sortBy, selectedNote, onNoteSelect, onNoteDeleted, onNoteUpdated }) => {
+  // Edit mode state
   const [editingNote, setEditingNote] = useState(null);
   const [editTitle, setEditTitle] = useState('');
   const [editContent, setEditContent] = useState('');
 
-  // Sort notes based on selected criteria
+  // Sort notes by title or creation date
   const sortedNotes = [...notes].sort((a, b) => {
     if (sortBy === 'title') {
       return a.title.localeCompare(b.title);
@@ -14,15 +15,17 @@ const NotesList = ({ notes, sortBy, selectedNote, onNoteSelect, onNoteDeleted, o
     }
   });
 
+  // Start editing a note
   const handleEdit = (note) => {
     setEditingNote(note.id);
     setEditTitle(note.title);
     setEditContent(note.content);
   };
 
+  // Save edited note
   const handleSaveEdit = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/notes/${editingNote}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/notes/${editingNote}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -43,10 +46,11 @@ const NotesList = ({ notes, sortBy, selectedNote, onNoteSelect, onNoteDeleted, o
     }
   };
 
+  // Delete a note with confirmation
   const handleDelete = async (noteId) => {
     if (window.confirm('Are you sure you want to delete this note?')) {
       try {
-        const response = await fetch(`http://localhost:5000/notes/${noteId}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/notes/${noteId}`, {
           method: 'DELETE',
           headers: {
             'Authorization': 'Bearer my-secret-token-123'
@@ -62,6 +66,7 @@ const NotesList = ({ notes, sortBy, selectedNote, onNoteSelect, onNoteDeleted, o
     }
   };
 
+  // Check if note has valid GPS coordinates
   const hasValidLocation = (note) => {
     return note.latitude && note.longitude && 
            !isNaN(note.latitude) && !isNaN(note.longitude);
