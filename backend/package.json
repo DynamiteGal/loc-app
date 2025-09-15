@@ -4,9 +4,7 @@
   "description": "Backend API for Location-Based Notes App",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "build": "echo 'No build step required'",
-    "dev": "nodemon server.js"
+    "start": "node server.js"
   },
   "keywords": ["notes", "location", "api"],
   "author": "",
@@ -17,6 +15,6 @@
     "dotenv": "^16.3.1"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": "18.x"
   }
 }
