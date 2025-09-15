@@ -1,0 +1,32 @@
+ 
+ /* Custom marker styles for Leaflet map */
+.custom-marker {
+  background: transparent;
+  border: none;
+}
+
+.marker-content {
+  background: #3B82F6;
+  color: white;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  transition: all 0.2s ease;
+}
+
+.marker-content.selected {
+  background: #EF4444;
+  transform: scale(1.2);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+}
+
+.marker-content:hover {
+  transform: scale(1.1);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+}
